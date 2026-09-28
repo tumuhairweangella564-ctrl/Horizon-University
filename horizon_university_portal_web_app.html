@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizon University - Excellence in Education & Innovation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            navy: '#0f172a',
+                            gold: '#d97706',
+                            goldlight: '#fef3c7'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(3, 105, 161, 0.8) 100%), 
+                        url('https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-600 selection:text-white">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed top-20 right-5 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full"></div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm transition-all duration-300" id="main-header">
+        <!-- Top Bar for Role Switching & Quick Contact -->
+        <div class="bg-brand-navy text-slate-300 text-xs py-2 px-4 sm:px-8 flex flex-wrap justify-between items-center border-b border-slate-800">
+            <div class="flex items-center space-x-6">
+                <span><i class="fa-solid fa-phone text-brand-600 mr-2"></i>+1 (800) 555-HORIZON</span>
+                <span class="hidden md:inline"><i class="fa-solid fa-envelope text-brand-600 mr-2"></i>admissions@horizon.edu</span>
+                <span class="hidden lg:inline"><i class="fa-solid fa-location-dot text-brand-600 mr-2"></i>University Hill, Cambridge, MA</span>
+            </div>
+            
+            <!-- Portal / Role Switcher -->
+            <div class="flex items-center space-x-2 my-1 sm:my-0">
+                <span class="text-slate-400 font-medium hidden sm:inline"><i class="fa-solid fa-user-gear mr-1"></i> Mode:</span>
+                <select id="role-selector" onchange="switchRole(this.value)" class="bg-slate-800 text-white text-xs rounded border border-slate-700 px-2 py-1 focus:ring-2 focus:ring-brand-600 outline-none cursor-pointer">
+                    <option value="public">🌐 Public Website</option>
+                    <option value="student">🎓 Student Portal (Kiseka Christian)</option>
+                    <option value="faculty">👨‍🏫 Faculty Portal (Dr. Thorne)</option>
+                    <option value="admin">🛡️ Administrator Portal</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Main Navbar -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Brand Logo -->
+                <a href="#" onclick="switchTab('home')" class="flex items-center space-x-3 group">
+                    <div class="w-11 h-11 bg-brand-700 text-white rounded-xl flex items-center justify-center font-serif text-2xl font-bold shadow-md shadow-brand-700/20 group-hover:scale-105 transition-transform">
+                        H
+                    </div>
+                    <div>
+                        <span class="font-serif text-2xl font-bold tracking-tight text-slate-900 block leading-none">HORIZON</span>
+                        <span class="text-xs uppercase tracking-widest text-brand-700 font-semibold">University</span>
+                    </div>
+                </a>
+
+                <!-- Public Nav Tabs -->
+                <nav id="public-nav" class="hidden lg:flex space-x-1">
+                    <button onclick="switchTab('home')" id="nav-home" class="nav-link px-4 py-2 text-sm font-semibold rounded-lg text-slate-700 hover:text-brand-700 hover:bg-slate-100 transition-colors">Home</button>
+                    <button onclick="switchTab('academics')" id="nav-academics" class="nav-link px-4 py-2 text-sm font-semibold rounded-lg text-slate-700 hover:text-brand-700 hover:bg-slate-100 transition-colors">Academics</button>
+                    <button onclick="switchTab('admissions')" id="nav-admissions" class="nav-link px-4 py-2 text-sm font-semibold rounded-lg text-slate-700 hover:text-brand-700 hover:bg-slate-100 transition-colors">Admissions</button>
+                    <button onclick="switchTab('campus')" id="nav-campus" class="nav-link px-4 py-2 text-sm font-semibold rounded-lg text-slate-700 hover:text-brand-700 hover:bg-slate-100 transition-colors">Campus Life</button>
+                    <button onclick="switchTab('faculty-public')" id="nav-faculty-public" class="nav-link px-4 py-2 text-sm font-semibold rounded-lg text-slate-700 hover:text-brand-700 hover:bg-slate-100 transition-colors">Faculty & Research</button>
+                </nav>
+
+                <!-- Portal Nav Quick Actions -->
+                <div class="hidden sm:flex items-center space-x-3" id="nav-right-actions">
+                    <button onclick="switchTab('admissions')" class="bg-brand- gold hover:bg-amber-600 bg-amber-600 text-white text-sm font-semibold px-4 py-2.5 rounded-lg shadow-sm transition-all flex items-center">
+                        <i class="fa-solid fa-pen-to-square mr-2"></i> Apply Now
+                    </button>
+                    <button onclick="switchRole('student')" class="border border-brand-700 text-brand-700 hover:bg-brand-50 text-sm font-semibold px-4 py-2.5 rounded-lg transition-all">
+                        Portal Login
+                    </button>
+                </div>
+
+                <!-- Mobile Hamburger Button -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl" id="mobile-menu-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-6 space-y-2">
+            <button onclick="switchTab('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Home</button>
+            <button onclick="switchTab('academics'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Academics</button>
+            <button onclick="switchTab('admissions'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Admissions</button>
+            <button onclick="switchTab('campus'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Campus Life</button>
+            <button onclick="switchTab('faculty-public'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-100">Faculty & Research</button>
+            <div class="pt-4 border-t border-slate-200 flex flex-col gap-2">
+                <button onclick="switchTab('admissions'); toggleMobileMenu()" class="w-full bg-amber-600 text-white font-semibold py-2 rounded-lg text-center">Apply Now</button>
+                <button onclick="switchRole('student'); toggleMobileMenu()" class="w-full border border-brand-700 text-brand-700 font-semibold py-2 rounded-lg text-center">Student Portal</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT VIEW WRAPPER -->
+    <main class="flex-grow">
+        
+        <!-- ========================================== -->
+        <!-- PUBLIC VIEW SECTIONS                      -->
+        <!-- ========================================== -->
+        <div id="public-view-container">
+
+            <!-- SECTION: HOME / OVERVIEW -->
+            <section id="sec-home" class="tab-content block">
+                <!-- Hero Section -->
+                <div class="hero-gradient relative py-28 md:py-36 px-4 text-center text-white flex flex-col items-center justify-center">
+                    <div class="max-w-4xl mx-auto space-y-6">
+                        <span class="inline-block bg-white/20 backdrop-blur-md text-white text-xs font-semibold uppercase tracking-widest px-4 py-1.5 rounded-full border border-white/30">
+                            Empowering Tomorrow's Leaders
+                        </span>
+                        <h1 class="font-serif text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white leading-tight">
+                            Shaping the Future through Knowledge & Innovation
+                        </h1>
+                        <p class="text-lg md:text-xl text-slate-200 font-light max-w-2xl mx-auto">
+                            Horizon University offers world-class education, ground-breaking research opportunities, and a vibrant diverse global community.
+                        </p>
+
+                        <!-- Hero Search Bar -->
+                        <div class="pt-4 max-w-xl mx-auto">
+                            <form onsubmit="event.preventDefault(); searchCoursesFromHero();" class="flex items-center bg-white rounded-full p-2 shadow-2xl">
+                                <i class="fa-solid fa-magnifying-glass text-slate-400 ml-4 mr-2"></i>
+                                <input type="text" id="hero-search-input" placeholder="Search degrees, programs, or courses (e.g. Computer Science)..." class="w-full bg-transparent border-none text-slate-800 placeholder-slate-400 focus:outline-none text-sm md:text-base py-1">
+                                <button type="submit" class="bg-brand-700 hover:bg-brand-800 text-white font-semibold px-6 py-2.5 rounded-full text-sm transition-colors shrink-0">
+                                    Search
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Hero CTA Buttons -->
+                        <div class="flex flex-wrap justify-center gap-4 pt-6">
+                            <button onclick="switchTab('academics')" class="bg-white text-brand-navy hover:bg-slate-100 font-bold px-8 py-3.5 rounded-xl text-sm shadow-lg transition-all transform hover:-translate-y-0.5">
+                                Explore Programs
+                            </button>
+                            <button onclick="switchTab('admissions')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-8 py-3.5 rounded-xl text-sm shadow-lg transition-all transform hover:-translate-y-0.5">
+                                Apply for FEB Term 2026
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Quick Stats Counter Banner -->
+                <div class="max-w-7xl mx-auto -mt-12 px-4 relative z-20">
+                    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-100 p-6">
+                        <div class="p-4 text-center">
+                            <div class="text-3xl md:text-4xl font-bold text-brand-700 font-serif">18,500+</div>
+                            <div class="text-xs md:text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Enrolled Students</div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <div class="text-3xl md:text-4xl font-bold text-brand-700 font-serif">1:12</div>
+                            <div class="text-xs md:text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Faculty-Student Ratio</div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <div class="text-3xl md:text-4xl font-bold text-brand-700 font-serif">140+</div>
+                            <div class="text-xs md:text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Degree Programs</div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <div class="text-3xl md:text-4xl font-bold text-brand-700 font-serif">Top #15</div>
+                            <div class="text-xs md:text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Global Research Rank</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured News & Academic Highlights Section -->
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                        <div>
+                            <span class="text-brand-700 font-semibold text-xs tracking-widest uppercase">Campus Updates</span>
+                            <h2 class="font-serif text-3xl md:text-4xl font-bold text-slate-900 mt-1">News & Announcements</h2>
+                        </div>
+                        <a href="#" onclick="alert('View all news archive')" class="text-brand-700 font-semibold text-sm hover:underline mt-2 md:mt-0 inline-flex items-center">View All News <i class="fa-solid fa-arrow-right ml-2 text-xs"></i></a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- News Card 1 -->
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow group flex flex-col">
+                            <div class="h-48 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=800&q=80" alt="Research" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-brand-700 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Research</span>
+                            </div>
+                            <div class="p-6 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <span class="text-xs text-slate-400">October 12, 2026</span>
+                                    <h3 class="font-bold text-xl text-slate-900 mt-2 mb-3 group-hover:text-brand-700 transition-colors">Horizon Research Team Secures $12M Quantum AI Breakthrough Grant</h3>
+                                    <p class="text-slate-600 text-sm line-clamp-3">The Department of Computer Science has been awarded a federal grant to lead cutting-edge advancements in sustainable quantum computing architectures.</p>
+                                </div>
+                                <button onclick="openNewsModal(1)" class="mt-4 text-brand-700 font-semibold text-sm inline-flex items-center hover:translate-x-1 transition-transform">Read Story <i class="fa-solid fa-chevron-right ml-1 text-xs"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- News Card 2 -->
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow group flex flex-col">
+                            <div class="h-48 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80" alt="Campus Life" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-amber-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Campus</span>
+                            </div>
+                            <div class="p-6 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <span class="text-xs text-slate-400">September 28, 2026</span>
+                                    <h3 class="font-bold text-xl text-slate-900 mt-2 mb-3 group-hover:text-brand-700 transition-colors">Annual Innovation & Global Leadership Summit Opening Next Week</h3>
+                                    <p class="text-slate-600 text-sm line-clamp-3">Bringing together industry founders, scholars, and student changemakers for three days of keynotes and workshops on sustainable development.</p>
+                                </div>
+                                <button onclick="openNewsModal(2)" class="mt-4 text-brand-700 font-semibold text-sm inline-flex items-center hover:translate-x-1 transition-transform">Read Story <i class="fa-solid fa-chevron-right ml-1 text-xs"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- News Card 3 -->
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition-shadow group flex flex-col">
+                            <div class="h-48 overflow-hidden relative">
+                                <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=800&q=80" alt="Students" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <span class="absolute top-3 left-3 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Admissions</span>
+                            </div>
+                            <div class="p-6 flex-grow flex flex-col justify-between">
+                                <div>
+                                    <span class="text-xs text-slate-400">September 15, 2026</span>
+                                    <h3 class="font-bold text-xl text-slate-900 mt-2 mb-3 group-hover:text-brand-700 transition-colors">Early Application Portal for Academic Year 2027 Officially Open</h3>
+                                    <p class="text-slate-600 text-sm line-clamp-3">Prospective undergraduate and graduate applicants can now submit online portfolios and track application status through our integrated platform.</p>
+                                </div>
+                                <button onclick="openNewsModal(3)" class="mt-4 text-brand-700 font-semibold text-sm inline-flex items-center hover:translate-x-1 transition-transform">Read Story <i class="fa-solid fa-chevron-right ml-1 text-xs"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: ACADEMICS & PROGRAM CATALOG -->
+            <section id="sec-academics" class="tab-content hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <span class="text-brand-700 font-semibold text-xs tracking-widest uppercase">Academic Programs</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-1">Explore Degrees & Curricula</h2>
+                    <p class="text-slate-600 mt-2">Filter through our comprehensive catalog of undergraduate, graduate, and doctoral programs designed for academic mastery.</p>
+                </div>
+
+                <!-- Catalog Filtering Bar -->
+                <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 flex flex-col md:flex-row gap-4 justify-between items-center">
+                    <div class="w-full md:w-1/3 relative">
+                        <i class="fa-solid fa-search absolute left-3.5 top-3.5 text-slate-400"></i>
+                        <input type="text" id="catalog-search" oninput="renderCourseCatalog()" placeholder="Search degree title or code..." class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600">
+                    </div>
+
+                    <div class="flex flex-wrap sm:flex-nowrap gap-3 w-full md:w-auto">
+                        <!-- Level Filter -->
+                        <select id="filter-level" onchange="renderCourseCatalog()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-600 w-full sm:w-auto">
+                            <option value="ALL">All Degree Levels</option>
+                            <option value="Undergraduate">Undergraduate (B.S. / B.A.)</option>
+                            <option value="Postgraduate">Postgraduate (M.S. / M.A.)</option>
+                            <option value="Doctorate">Doctorate (Ph.D.)</option>
+                        </select>
+
+                        <!-- Faculty Filter -->
+                        <select id="filter-faculty" onchange="renderCourseCatalog()" class="bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-brand-600 w-full sm:w-auto">
+                            <option value="ALL">All Faculties</option>
+                            <option value="Computer Science">Computer Science & AI</option>
+                            <option value="Business">Business & Management</option>
+                            <option value="Engineering">Engineering & Robotics</option>
+                            <option value="Medicine">Medicine & Health Sciences</option>
+                            <option value="Humanities">Humanities & Arts</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Catalog Grid Display -->
+                <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic rendering via JavaScript -->
+                </div>
+            </section>
+
+            <!-- SECTION: ADMISSIONS & ONLINE APPLICATION FORM -->
+            <section id="sec-admissions" class="tab-content hidden py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+                <div class="text-center mb-8">
+                    <span class="text-brand-700 font-semibold text-xs tracking-widest uppercase">Online Application</span>
+                    <h2 class="font-serif text-3xl font-bold text-slate-900 mt-1">Enroll at Horizon University</h2>
+                    <p class="text-slate-600 text-sm mt-1">Complete your online student application in a few simple steps.</p>
+                </div>
+
+                <!-- Multi-step Application Wizard Container -->
+                <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+                    
+                    <!-- Progress Header Bar -->
+                    <div class="bg-slate-900 p-6 text-white">
+                        <div class="flex justify-between items-center mb-4">
+                            <span id="wizard-step-title" class="font-semibold text-brand-gold">Step 1 of 4: Personal Information</span>
+                            <span id="wizard-step-percent" class="text-xs bg-slate-800 px-3 py-1 rounded-full text-slate-300">25% Complete</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div id="wizard-progress-bar" class="bg-brand-600 h-full w-1/4 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Wizard Form -->
+                    <form id="admission-form" onsubmit="handleApplicationSubmit(event)" class="p-6 sm:p-8">
+                        
+                        <!-- STEP 1: Personal Info -->
+                        <div id="step-1" class="wizard-step space-y-4">
+                            <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Personal Details</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">First Name *</label>
+                                    <input type="text" id="app-firstname" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" placeholder="Jane">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Last Name *</label>
+                                    <input type="text" id="app-lastname" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" placeholder="Doe">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Email Address *</label>
+                                    <input type="email" id="app-email" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" placeholder="jane.doe@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Phone Number *</label>
+                                    <input type="tel" id="app-phone" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" placeholder="+1 (555) 000-0000">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Date of Birth *</label>
+                                <input type="date" id="app-dob" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600">
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Academic Background -->
+                        <div id="step-2" class="wizard-step hidden space-y-4">
+                            <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Previous Education</h3>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">High School / Prior Institution *</label>
+                                <input type="text" id="app-school" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" placeholder="Cambridge Academy">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">GPA / Score (Out of 4.0 or %)</label>
+                                    <input type="text" id="app-gpa" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" placeholder="3.85">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Graduation Year</label>
+                                    <input type="number" id="app-gradyear" value="2026" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Program Selection -->
+                        <div id="step-3" class="wizard-step hidden space-y-4">
+                            <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Program Selection</h3>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Intended Degree Program *</label>
+                                <select id="app-program" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600">
+                                    <option value="">Select a program...</option>
+                                    <option value="B.S. Computer Science & AI">B.S. Computer Science & AI</option>
+                                    <option value="B.B.A. Global Business & Finance">B.B.A. Global Business & Finance</option>
+                                    <option value="M.S. Robotics & Automation">M.S. Robotics & Automation</option>
+                                    <option value="Doctor of Medicine (M.D.)">Doctor of Medicine (M.D.)</option>
+                                    <option value="M.A. Digital Media & Journalism">M.A. Digital Media & Journalism</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Entry Term *</label>
+                                <select id="app-term" required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600">
+                                    <option value="FEB 2026">FEB Semester 2026</option>
+                                    <option value="AUG 2027">AUG Semester 2027</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Personal Statement / Essay Excerpt</label>
+                                <textarea id="app-statement" rows="3" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-600" placeholder="Briefly describe your academic aspirations..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- STEP 4: Review & Document Upload Simulation -->
+                        <div id="step-4" class="wizard-step hidden space-y-4">
+                            <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Document Preview & Final Submission</h3>
+                            
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-sm">
+                                <div class="font-semibold text-slate-800">Application Summary Preview:</div>
+                                <div id="app-summary-text" class="text-slate-600 text-xs leading-relaxed"></div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Upload Transcript / Certificate (Simulated PDF)</label>
+                                <div class="border-2 border-dashed border-slate-300 rounded-xl p-4 text-center hover:bg-slate-50 transition-colors cursor-pointer" onclick="document.getElementById('simulated-file').click()">
+                                    <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
+                                    <p class="text-xs text-slate-600 font-medium" id="file-label-text">Click to attach Academic Record (PDF, max 10MB)</p>
+                                    <input type="file" id="simulated-file" class="hidden" onchange="document.getElementById('file-label-text').innerText = 'Attached: ' + (this.files[0]?.name || 'Transcript.pdf')">
+                                </div>
+                            </div>
+
+                            <div class="flex items-center space-x-2">
+                                <input type="checkbox" id="app-terms" required class="rounded text-brand-600 focus:ring-brand-600">
+                                <label for="app-terms" class="text-xs text-slate-600">I certify all information submitted is accurate and authentic.</label>
+                            </div>
+                        </div>
+
+                        <!-- Form Navigation Controls -->
+                        <div class="mt-8 flex justify-between items-center pt-4 border-t border-slate-200">
+                            <button type="button" id="wizard-prev-btn" onclick="changeWizardStep(-1)" class="px-5 py-2.5 border border-slate-300 text-slate-700 text-sm font-semibold rounded-xl hover:bg-slate-100 transition-colors hidden">
+                                Previous
+                            </button>
+                            <div class="ml-auto flex gap-3">
+                                <button type="button" id="wizard-next-btn" onclick="changeWizardStep(1)" class="bg-brand-700 hover:bg-brand-800 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors">
+                                    Next Step <i class="fa-solid fa-arrow-right ml-1"></i>
+                                </button>
+                                <button type="submit" id="wizard-submit-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors hidden">
+                                    Submit Application <i class="fa-solid fa-paper-plane ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </section>
+
+            <!-- SECTION: CAMPUS LIFE & FACILITIES -->
+            <section id="sec-campus" class="tab-content hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <span class="text-brand-700 font-semibold text-xs tracking-widest uppercase">Campus Experience</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-1">World-Class Facilities & Life</h2>
+                    <p class="text-slate-600 mt-2">Explore the vibrant campus grounds, sports hubs, research labs, and residential halls designed to enrich student living.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Facility Item 1 -->
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 group cursor-pointer" onclick="openFacilityModal('High-Tech Innovation Lab', 'Equipped with state-of-the-art supercomputers, 3D prototyping tools, and VR development studios open 24/7.', 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80')">
+                        <div class="h-56 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80" alt="Lab" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg text-slate-900 group-hover:text-brand-700 transition-colors">Innovation & AI Robotics Lab</h3>
+                            <p class="text-slate-500 text-sm mt-1">Advanced research facility hosting over 40 ongoing engineering projects.</p>
+                        </div>
+                    </div>
+
+                    <!-- Facility Item 2 -->
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 group cursor-pointer" onclick="openFacilityModal('Central University Library', 'Houses over 1.5 million volumes, private study pods, collaborative lounge spaces, and digital archive access.', 'https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80')">
+                        <div class="h-56 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=800&q=80" alt="Library" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg text-slate-900 group-hover:text-brand-700 transition-colors">Central Academic Library</h3>
+                            <p class="text-slate-500 text-sm mt-1">A silent study haven and massive intellectual repository spanning 5 floors.</p>
+                        </div>
+                    </div>
+
+                    <!-- Facility Item 3 -->
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 group cursor-pointer" onclick="openFacilityModal('Olympic Sports Complex', 'Includes an indoor aquatic center, basketball arenas, fitness centers, and outdoor athletics track.', 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80')">
+                        <div class="h-56 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80" alt="Sports" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg text-slate-900 group-hover:text-brand-700 transition-colors">Olympic Sports Complex</h3>
+                            <p class="text-slate-500 text-sm mt-1">NCAA-standard sports facilities and wellness hubs for student athletes.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: FACULTY & RESEARCH DIRECTORY -->
+            <section id="sec-faculty-public" class="tab-content hidden py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-10">
+                    <span class="text-brand-700 font-semibold text-xs tracking-widest uppercase">Our Esteemed Educators</span>
+                    <h2 class="font-serif text-3xl sm:text-4xl font-bold text-slate-900 mt-1">Faculty & Researchers</h2>
+                    <p class="text-slate-600 mt-2">Meet the renowned scholars, practitioners, and mentors guiding education at Horizon.</p>
+                </div>
+
+                <!-- Faculty Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="faculty-grid">
+                    <!-- Dynamic rendering in JS -->
+                </div>
+            </section>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- INTEGRATED PORTALS (MANAGEMENT BACKEND)   -->
+        <!-- ========================================== -->
+        <div id="portal-view-container" class="hidden">
+
+            <!-- 1. STUDENT PORTAL VIEW -->
+            <div id="portal-student" class="portal-pane hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+                <!-- Portal Banner -->
+                <div class="bg-gradient-to-r from-brand-900 to-brand-700 rounded-2xl p-6 sm:p-8 text-white flex flex-col md:flex-row justify-between items-start md:items-center shadow-lg">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 rounded-full bg-white/20 border-2 border-white/40 flex items-center justify-center font-bold text-2xl">
+                            AV
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold">Welcome back, Kiseka Christian</h2>
+                            <p class="text-brand-100 text-sm">B.S. Computer Science & AI • Year 3 • Student ID: #HZ-89021</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 md:mt-0 flex gap-3">
+                        <button onclick="switchTab('home'); switchRole('public')" class="bg-white/10 hover:bg-white/20 text-white text-xs px-4 py-2 rounded-lg border border-white/20 transition-colors">
+                            <i class="fa-solid fa-arrow-left mr-1"></i> Exit Portal
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Student Stats Grid -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 uppercase font-semibold">Cumulative GPA</span>
+                        <div class="text-2xl font-bold text-slate-900 mt-1">3.88 / 4.0</div>
+                        <span class="text-xs text-emerald-600 font-medium">Dean's List Honoree</span>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 uppercase font-semibold">Enrolled Credits</span>
+                        <div class="text-2xl font-bold text-slate-900 mt-1" id="student-credit-count">12 Credits</div>
+                        <span class="text-xs text-slate-500 font-medium">FEB 2026 Term</span>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 uppercase font-semibold">Upcoming Due</span>
+                        <div class="text-2xl font-bold text-amber-600 mt-1">2 Assignments</div>
+                        <span class="text-xs text-slate-500 font-medium">Due in 48 hours</span>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <span class="text-xs text-slate-500 uppercase font-semibold">Tuition Balance</span>
+                        <div class="text-2xl font-bold text-emerald-600 mt-1">$0.00</div>
+                        <span class="text-xs text-emerald-600 font-medium">Paid in full</span>
+                    </div>
+                </div>
+
+                <!-- Main Portal Tabs Container (Course Registration, Schedule, Gradebook) -->
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="border-b border-slate-200 bg-slate-50 px-6 py-3 flex flex-wrap gap-4">
+                        <button onclick="switchStudentTab('courses')" id="stab-btn-courses" class="font-semibold text-sm px-4 py-2 rounded-lg bg-white shadow-sm text-brand-700">Interactive Course Registration</button>
+                        <button onclick="switchStudentTab('schedule')" id="stab-btn-schedule" class="font-semibold text-sm px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900">Class Schedule Calendar</button>
+                        <button onclick="switchStudentTab('grades')" id="stab-btn-grades" class="font-semibold text-sm px-4 py-2 rounded-lg text-slate-600 hover:text-slate-900">Academic Transcript & Grades</button>
+                    </div>
+
+                    <!-- Student Tab 1: Course Registration -->
+                    <div id="stab-courses" class="p-6">
+                        <h3 class="font-bold text-lg text-slate-900 mb-2">Available Course Enrollment</h3>
+                        <p class="text-xs text-slate-500 mb-6">Select courses to add or drop from your current term schedule. Max limit: 18 credits.</p>
+
+                        <div class="space-y-4" id="student-course-list">
+                            <!-- JS populates course list with Enroll/Drop buttons -->
+                        </div>
+                    </div>
+
+                    <!-- Student Tab 2: Schedule Calendar Grid -->
+                    <div id="stab-schedule" class="p-6 hidden">
+                        <h3 class="font-bold text-lg text-slate-900 mb-4">Weekly Schedule Overview</h3>
+                        <div class="grid grid-cols-5 gap-2 text-center text-xs font-semibold text-slate-500 border-b pb-2">
+                            <div>Monday</div>
+                            <div>Tuesday</div>
+                            <div>Wednesday</div>
+                            <div>Thursday</div>
+                            <div>Friday</div>
+                        </div>
+                        <div class="grid grid-cols-5 gap-2 pt-4 min-h-[220px]">
+                            <div class="bg-brand-50 p-2 rounded-lg border border-brand-100 text-xs">
+                                <span class="font-bold text-brand-800 block">CS 301 - AI</span>
+                                <span class="text-slate-500">09:00 - 10:30 AM</span>
+                            </div>
+                            <div class="bg-amber-50 p-2 rounded-lg border border-amber-100 text-xs">
+                                <span class="font-bold text-amber-800 block">CS 204 - Data Struct</span>
+                                <span class="text-slate-500">11:00 - 12:30 PM</span>
+                            </div>
+                            <div class="bg-brand-50 p-2 rounded-lg border border-brand-100 text-xs">
+                                <span class="font-bold text-brand-800 block">CS 301 - AI</span>
+                                <span class="text-slate-500">09:00 - 10:30 AM</span>
+                            </div>
+                            <div class="bg-amber-50 p-2 rounded-lg border border-amber-100 text-xs">
+                                <span class="font-bold text-amber-800 block">CS 204 - Data Struct</span>
+                                <span class="text-slate-500">11:00 - 12:30 PM</span>
+                            </div>
+                            <div class="bg-emerald-50 p-2 rounded-lg border border-emerald-100 text-xs">
+                                <span class="font-bold text-emerald-800 block">ENG 102 - Ethics</span>
+                                <span class="text-slate-500">02:00 - 04:00 PM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Student Tab 3: Grades & Transcript Preview -->
+                    <div id="stab-grades" class="p-6 hidden">
+                        <h3 class="font-bold text-lg text-slate-900 mb-4">Unofficial Academic Transcript</h3>
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b">
+                                <tr>
+                                    <th class="p-3">Course Code</th>
+                                    <th class="p-3">Course Title</th>
+                                    <th class="p-3">Credits</th>
+                                    <th class="p-3">Grade</th>
+                                    <th class="p-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100" id="transcript-table-body">
+                                <tr>
+                                    <td class="p-3 font-semibold">CS 101</td>
+                                    <td class="p-3">Introduction to Programming</td>
+                                    <td class="p-3">3.0</td>
+                                    <td class="p-3 font-bold text-emerald-600">A</td>
+                                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2 py-0.5 rounded">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold">MATH 201</td>
+                                    <td class="p-3">Linear Algebra & Calculus</td>
+                                    <td class="p-3">4.0</td>
+                                    <td class="p-3 font-bold text-emerald-600">A-</td>
+                                    <td class="p-3"><span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2 py-0.5 rounded">Completed</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold">CS 301</td>
+                                    <td class="p-3">Artificial Intelligence & ML</td>
+                                    <td class="p-3">3.0</td>
+                                    <td class="p-3 font-bold text-brand-600">In Progress</td>
+                                    <td class="p-3"><span class="bg-brand-100 text-brand-800 text-xs font-semibold px-2 py-0.5 rounded">Active</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. FACULTY PORTAL VIEW -->
+            <div id="portal-faculty" class="portal-pane hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+                <div class="bg-slate-900 rounded-2xl p-6 text-white flex justify-between items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold">Faculty Portal • Dr. Marcus Thorne</h2>
+                        <p class="text-xs text-slate-400">Department Chair, Computer Science & AI</p>
+                    </div>
+                    <span class="bg-brand-700 text-xs px-3 py-1.5 rounded-lg font-semibold">FEB 2026</span>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Class Selection / Roster Panel -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <h3 class="font-bold text-base text-slate-900 mb-4">Assigned Courses</h3>
+                        <div class="space-y-3">
+                            <button onclick="selectFacultyCourse('CS301')" class="w-full text-left p-3 rounded-xl border border-brand-600 bg-brand-50 flex justify-between items-center">
+                                <div>
+                                    <div class="font-bold text-sm text-brand-900">CS 301: AI & Machine Learning</div>
+                                    <div class="text-xs text-slate-500">32 Students Enrolled</div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-brand-600"></i>
+                            </button>
+                            <button onclick="selectFacultyCourse('CS204')" class="w-full text-left p-3 rounded-xl border border-slate-200 hover:bg-slate-50 flex justify-between items-center">
+                                <div>
+                                    <div class="font-bold text-sm text-slate-800">CS 204: Advanced Data Structures</div>
+                                    <div class="text-xs text-slate-500">28 Students Enrolled</div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Grade Submission & Roster Table -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h3 class="font-bold text-lg text-slate-900" id="faculty-selected-course-title">CS 301: Student Grade Roster</h3>
+                                <p class="text-xs text-slate-500">Enter final assessment scores for live transcript synchronization.</p>
+                            </div>
+                            <button onclick="saveFacultyGrades()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors">
+                                <i class="fa-solid fa-floppy-disk mr-1"></i> Save Grades
+                            </button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase border-b">
+                                    <tr>
+                                        <th class="p-3">Student Name</th>
+                                        <th class="p-3">Student ID</th>
+                                        <th class="p-3">Attendance</th>
+                                        <th class="p-3">Grade Input</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100" id="faculty-roster-body">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. ADMINISTRATOR PORTAL VIEW -->
+            <div id="portal-admin" class="portal-pane hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">University Administrative Control Center</h2>
+                        <p class="text-xs text-slate-500">Manage admissions, catalog offerings, and university growth analytics.</p>
+                    </div>
+                    <div class="mt-4 sm:mt-0 flex gap-2">
+                        <button onclick="openAddCourseModal()" class="bg-brand-700 hover:bg-brand-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl transition-colors">
+                            <i class="fa-solid fa-plus mr-1"></i> Add New Course
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Admin Analytics Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Chart Widget -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                        <h3 class="font-bold text-base text-slate-900 mb-2">Enrollment & Admissions Trends</h3>
+                        <div class="h-64">
+                            <canvas id="adminAnalyticsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Admin Quick Stats -->
+                    <div class="space-y-4">
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="text-xs text-slate-500 uppercase font-semibold">Total Pending Applications</div>
+                            <div class="text-3xl font-bold text-amber-600 mt-1" id="admin-pending-count">0</div>
+                            <span class="text-xs text-slate-500">Awaiting Admissions Officer Review</span>
+                        </div>
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="text-xs text-slate-500 uppercase font-semibold">Total Revenue Collected (YTD)</div>
+                            <div class="text-3xl font-bold text-emerald-600 mt-1">$14.2M</div>
+                            <span class="text-xs text-emerald-600 font-medium">↑ 8.4% from last academic year</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Applications Review Queue -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h3 class="font-bold text-lg text-slate-900 mb-4">Admissions Application Submissions Queue</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-xs font-semibold text-slate-500 uppercase border-b">
+                                <tr>
+                                    <th class="p-3">App ID</th>
+                                    <th class="p-3">Applicant Name</th>
+                                    <th class="p-3">Program Applied</th>
+                                    <th class="p-3">GPA</th>
+                                    <th class="p-3">Submission Date</th>
+                                    <th class="p-3">Status</th>
+                                    <th class="p-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100" id="admin-applications-table">
+                                <!-- JS dynamic rendering of submissions -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- MODALS SECTION -->
+    
+    <!-- Course Detail / Syllabus Modal -->
+    <div id="course-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeModal('course-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <span id="modal-course-code" class="bg-brand-100 text-brand-800 text-xs font-bold px-3 py-1 rounded-full uppercase">CS 301</span>
+            <h2 id="modal-course-title" class="text-2xl font-bold text-slate-900 mt-2">Artificial Intelligence & Neural Networks</h2>
+            <p id="modal-course-dept" class="text-xs text-slate-500 mt-1">Faculty of Computer Science • 3.0 Academic Credits</p>
+
+            <div class="mt-6 space-y-4">
+                <div>
+                    <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider">Course Overview</h4>
+                    <p id="modal-course-desc" class="text-sm text-slate-700 mt-1 leading-relaxed">Comprehensive study of algorithmic learning models, deep neural networks, logic representation, and computer vision systems.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs">
+                    <div>
+                        <span class="text-slate-500 font-medium block">Tuition Cost:</span>
+                        <span id="modal-course-tuition" class="font-bold text-slate-900">$2,450 USD</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-500 font-medium block">Prerequisite:</span>
+                        <span id="modal-course-prereq" class="font-bold text-slate-900">CS 101 or Equivalent</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold uppercase text-slate-400 tracking-wider">Syllabus Breakdown</h4>
+                    <ul class="list-disc list-inside text-xs text-slate-600 mt-2 space-y-1" id="modal-course-syllabus">
+                        <li>Week 1-4: Supervised Learning & Regression Models</li>
+                        <li>Week 5-8: Convolutional Neural Networks (CNNs)</li>
+                        <li>Week 9-12: Natural Language Processing & Large Models</li>
+                        <li>Week 13-16: Capstone AI Research Project</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+                <button onclick="closeModal('course-modal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs px-5 py-2.5 rounded-xl transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Add Course Modal -->
+    <div id="add-course-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+            <button onclick="closeModal('add-course-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <h3 class="text-xl font-bold text-slate-900 mb-4">Add Course to University Catalog</h3>
+            
+            <form onsubmit="handleAddNewCourse(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Course Code (e.g. CS 405)</label>
+                    <input type="text" id="new-course-code" required class="w-full p-2.5 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-brand-600">
+                </div>
+                <div>
+                    <label class="block font-semibold text-slate-700 mb-1">Course Name</label>
+                    <input type="text" id="new-course-name" required class="w-full p-2.5 bg-slate-50 border rounded-xl focus:ring-2 focus:ring-brand-600">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Faculty</label>
+                        <select id="new-course-faculty" required class="w-full p-2.5 bg-slate-50 border rounded-xl">
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Business">Business</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Medicine">Medicine</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-700 mb-1">Level</label>
+                        <select id="new-course-level" required class="w-full p-2.5 bg-slate-50 border rounded-xl">
+                            <option value="Undergraduate">Undergraduate</option>
+                            <option value="Postgraduate">Postgraduate</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-2 pt-4">
+                    <button type="button" onclick="closeModal('add-course-modal')" class="px-4 py-2 border rounded-xl">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-brand-700 text-white rounded-xl font-semibold">Add Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <div class="flex items-center space-x-2 text-white font-serif text-xl font-bold">
+                    <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center text-sm">H</div>
+                    <span>HORIZON UNIVERSITY</span>
+                </div>
+                <p class="text-xs leading-relaxed">Dedicated to global academic excellence, interdisciplinary research, and preparing leaders for tomorrow's challenges.</p>
+            </div>
+            <div>
+                <h4 class="text-white text-xs font-bold uppercase tracking-wider mb-3">Quick Links</h4>
+                <ul class="space-y-2 text-xs">
+                    <li><a href="#" onclick="switchTab('academics')" class="hover:text-white">Academic Catalog</a></li>
+                    <li><a href="#" onclick="switchTab('admissions')" class="hover:text-white">Admissions Portal</a></li>
+                    <li><a href="#" onclick="switchTab('campus')" class="hover:text-white">Campus Facilities</a></li>
+                    <li><a href="#" onclick="switchRole('student')" class="hover:text-white">Student Login</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white text-xs font-bold uppercase tracking-wider mb-3">Faculties</h4>
+                <ul class="space-y-2 text-xs">
+                    <li>School of Computer Science & AI</li>
+                    <li>School of Business & Economics</li>
+                    <li>College of Engineering</li>
+                    <li>Faculty of Medicine</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white text-xs font-bold uppercase tracking-wider mb-3">Contact Admissions</h4>
+                <p class="text-xs">100 Horizon Parkway, University Hill, MA 02138</p>
+                <p class="text-xs mt-2">Email: admissions@horizon.edu</p>
+                <p class="text-xs">Phone: +1 (800) 555-HORIZON</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 pt-6 border-t border-slate-800 text-xs text-slate-500 text-center">
+            © 2026 Horizon University. All rights reserved. Self-contained University System Web Application.
+        </div>
+    </footer>
+
+    <!-- APPLICATION JAVASCRIPT LOGIC -->
+    <script>
+        /* ==========================================================================
+           1. INITIAL DATA STORES & LOCAL STORAGE SIMULATION
+           ========================================================================== */
+
+        const DEFAULT_COURSES = [
+            {
+                id: 'CS301',
+                code: 'CS 301',
+                title: 'Artificial Intelligence & Neural Networks',
+                faculty: 'Computer Science',
+                level: 'Undergraduate',
+                credits: 3,
+                tuition: '$2,450',
+                prereq: 'CS 101',
+                desc: 'Comprehensive study of algorithmic learning models, deep neural networks, and decision systems.',
+                enrolled: false
+            },
+            {
+                id: 'CS204',
+                code: 'CS 204',
+                title: 'Advanced Data Structures & Algorithms',
+                faculty: 'Computer Science',
+                level: 'Undergraduate',
+                credits: 4,
+                tuition: '$2,800',
+                prereq: 'CS 101',
+                desc: 'Focuses on graph algorithms, hash tables, asymptotic notation, and complex memory optimization.',
+                enrolled: true
+            },
+            {
+                id: 'BUS501',
+                code: 'BUS 501',
+                title: 'Global Financial Strategy & Markets',
+                faculty: 'Business',
+                level: 'Postgraduate',
+                credits: 3,
+                tuition: '$3,100',
+                prereq: 'None',
+                desc: 'Explores cross-border investments, corporate valuation models, and macroeconomic risk factors.',
+                enrolled: false
+            },
+            {
+                id: 'ENG102',
+                code: 'ENG 102',
+                title: 'Robotics Engineering Ethics & Safety',
+                faculty: 'Engineering',
+                level: 'Undergraduate',
+                credits: 2,
+                tuition: '$1,900',
+                prereq: 'None',
+                desc: 'Examines safety protocols, human-robot interaction, and ethical considerations in autonomous design.',
+                enrolled: true
+            },
+            {
+                id: 'MED402',
+                code: 'MED 402',
+                title: 'Clinical Neuroscience & Pathologies',
+                faculty: 'Medicine',
+                level: 'Doctorate',
+                credits: 5,
+                tuition: '$4,200',
+                prereq: 'BIO 201',
+                desc: 'In-depth exploration of human central nervous system disorders and modern surgical diagnostics.',
+                enrolled: false
+            }
+        ];
+
+        const DEFAULT_FACULTY = [
+            {
+                name: 'Dr. Marcus Thorne',
+                title: 'Department Chair & Professor',
+                dept: 'Computer Science & AI',
+                email: 'm.thorne@horizon.edu',
+                publications: '142 Papers',
+                img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
+            },
+            {
+                name: 'Prof. Elena Rostova',
+                title: 'Senior Fellow in Finance',
+                dept: 'Business & Management',
+                email: 'e.rostova@horizon.edu',
+                publications: '89 Papers',
+                img: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80'
+            },
+            {
+                name: 'Dr. Aris Thorne',
+                title: 'Lead Robotics Researcher',
+                dept: 'Engineering',
+                email: 'a.thorne@horizon.edu',
+                publications: '64 Papers',
+                img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80'
+            }
+        ];
+
+        let courses = JSON.parse(localStorage.getItem('horizon_courses')) || DEFAULT_COURSES;
+        let applications = JSON.parse(localStorage.getItem('horizon_apps')) || [
+            {
+                id: 'APP-9081',
+                name: 'Sarah Connor',
+                email: 's.connor@example.com',
+                program: 'B.S. Computer Science & AI',
+                gpa: '3.92',
+                date: '2026-09-20',
+                status: 'Pending'
+            }
+        ];
+
+        let facultyRoster = [
+            { name: 'Kiseka Christian', id: 'HZ-89021', attendance: '95%', grade: 'A' },
+            { name: 'David Miller', id: 'HZ-89044', attendance: '88%', grade: 'B+' },
+            { name: 'Emma Watson', id: 'HZ-89099', attendance: '100%', grade: 'A' }
+        ];
+
+        let currentWizardStep = 1;
+        let adminChartInstance = null;
+
+        /* ==========================================================================
+           2. ROUTING & NAVIGATION CONTROLLER
+           ========================================================================== */
+
+        function switchTab(tabId) {
+            // Hide all public tab contents
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(t => t.classList.add('hidden'));
+            tabs.forEach(t => t.classList.remove('block'));
+
+            // Deactivate nav highlights
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('text-brand-700', 'bg-slate-100'));
+
+            // Activate target
+            const target = document.getElementById(`sec-${tabId}`);
+            if (target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.add('text-brand-700', 'bg-slate-100');
+            }
+
+            // Ensure public view wrapper is active
+            document.getElementById('public-view-container').classList.remove('hidden');
+            document.getElementById('portal-view-container').classList.add('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function switchRole(role) {
+            const publicContainer = document.getElementById('public-view-container');
+            const portalContainer = document.getElementById('portal-view-container');
+            const portalPanes = document.querySelectorAll('.portal-pane');
+
+            // Reset selection dropdown
+            document.getElementById('role-selector').value = role;
+
+            if (role === 'public') {
+                publicContainer.classList.remove('hidden');
+                portalContainer.classList.add('hidden');
+                switchTab('home');
+            } else {
+                publicContainer.classList.add('hidden');
+                portalContainer.classList.remove('hidden');
+
+                portalPanes.forEach(p => p.classList.add('hidden'));
+
+                if (role === 'student') {
+                    document.getElementById('portal-student').classList.remove('hidden');
+                    renderStudentCourses();
+                } else if (role === 'faculty') {
+                    document.getElementById('portal-faculty').classList.remove('hidden');
+                    renderFacultyRoster();
+                } else if (role === 'admin') {
+                    document.getElementById('portal-admin').classList.remove('hidden');
+                    renderAdminApplications();
+                    initAdminChart();
+                }
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        /* ==========================================================================
+           3. ACADEMIC CATALOG & SEARCH CONTROLLER
+           ========================================================================== */
+
+        function renderCourseCatalog() {
+            const grid = document.getElementById('catalog-grid');
+            const searchVal = document.getElementById('catalog-search').value.toLowerCase();
+            const levelVal = document.getElementById('filter-level').value;
+            const facultyVal = document.getElementById('filter-faculty').value;
+
+            const filtered = courses.filter(c => {
+                const matchesSearch = c.title.toLowerCase().includes(searchVal) || c.code.toLowerCase().includes(searchVal);
+                const matchesLevel = (levelVal === 'ALL' || c.level === levelVal);
+                const matchesFaculty = (facultyVal === 'ALL' || c.faculty === facultyVal);
+                return matchesSearch && matchesLevel && matchesFaculty;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-slate-400">
+                        <i class="fa-solid fa-graduation-cap text-4xl mb-2"></i>
+                        <p>No courses matched your search filters.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(c => `
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="bg-brand-50 text-brand-700 text-xs font-bold px-3 py-1 rounded-full border border-brand-100">${c.code}</span>
+                            <span class="text-xs text-slate-500 font-medium">${c.credits} Credits</span>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 mb-2">${c.title}</h3>
+                        <p class="text-xs text-slate-600 line-clamp-2 mb-4">${c.desc}</p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                        <span class="text-xs font-semibold text-slate-500">${c.level}</span>
+                        <button onclick="openCourseModal('${c.id}')" class="text-brand-700 hover:text-brand-800 text-xs font-bold inline-flex items-center">
+                            View Syllabus <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchCoursesFromHero() {
+            const query = document.getElementById('hero-search-input').value;
+            switchTab('academics');
+            document.getElementById('catalog-search').value = query;
+            renderCourseCatalog();
+        }
+
+        function openCourseModal(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+
+            document.getElementById('modal-course-code').innerText = course.code;
+            document.getElementById('modal-course-title').innerText = course.title;
+            document.getElementById('modal-course-dept').innerText = `Faculty of ${course.faculty} • ${course.credits} Credits`;
+            document.getElementById('modal-course-desc').innerText = course.desc;
+            document.getElementById('modal-course-tuition').innerText = course.tuition;
+            document.getElementById('modal-course-prereq').innerText = course.prereq;
+
+            document.getElementById('course-modal').classList.remove('hidden');
+        }
+
+        /* ==========================================================================
+           4. ADMISSIONS WIZARD & APPLICATION SYSTEM
+           ========================================================================== */
+
+        function changeWizardStep(delta) {
+            const newStep = currentWizardStep + delta;
+            if (newStep < 1 || newStep > 4) return;
+
+            // Validate step before proceeding
+            if (delta > 0 && !validateWizardStep(currentWizardStep)) {
+                showToast('Please fill out all required fields before proceeding.', 'error');
+                return;
+            }
+
+            document.getElementById(`step-${currentWizardStep}`).classList.add('hidden');
+            currentWizardStep = newStep;
+            document.getElementById(`step-${currentWizardStep}`).classList.remove('hidden');
+
+            // Update Progress UI
+            const titles = [
+                'Step 1 of 4: Personal Information',
+                'Step 2 of 4: Academic Background',
+                'Step 3 of 4: Program Selection',
+                'Step 4 of 4: Review & Upload Documents'
+            ];
+            document.getElementById('wizard-step-title').innerText = titles[currentWizardStep - 1];
+            document.getElementById('wizard-step-percent').innerText = `${currentWizardStep * 25}% Complete`;
+            document.getElementById('wizard-progress-bar').style.width = `${currentWizardStep * 25}%`;
+
+            // Button Visibilities
+            document.getElementById('wizard-prev-btn').classList.toggle('hidden', currentWizardStep === 1);
+            document.getElementById('wizard-next-btn').classList.toggle('hidden', currentWizardStep === 4);
+            document.getElementById('wizard-submit-btn').classList.toggle('hidden', currentWizardStep !== 4);
+
+            if (currentWizardStep === 4) {
+                // Populate summary text
+                const fn = document.getElementById('app-firstname').value;
+                const ln = document.getElementById('app-lastname').value;
+                const prog = document.getElementById('app-program').value;
+                const school = document.getElementById('app-school').value;
+                document.getElementById('app-summary-text').innerHTML = `
+                    <strong>Applicant:</strong> ${fn} ${ln}<br>
+                    <strong>Target Program:</strong> ${prog}<br>
+                    <strong>Prior School:</strong> ${school}
+                `;
+            }
+        }
+
+        function validateWizardStep(step) {
+            if (step === 1) {
+                return document.getElementById('app-firstname').value && document.getElementById('app-lastname').value && document.getElementById('app-email').value;
+            }
+            if (step === 2) {
+                return document.getElementById('app-school').value && document.getElementById('app-gpa').value;
+            }
+            if (step === 3) {
+                return document.getElementById('app-program').value;
+            }
+            return true;
+        }
+
+        function handleApplicationSubmit(e) {
+            e.preventDefault();
+            const newApp = {
+                id: `APP-${Math.floor(1000 + Math.random() * 9000)}`,
+                name: `${document.getElementById('app-firstname').value} ${document.getElementById('app-lastname').value}`,
+                email: document.getElementById('app-email').value,
+                program: document.getElementById('app-program').value,
+                gpa: document.getElementById('app-gpa').value,
+                date: new Date().toISOString().split('T')[0],
+                status: 'Pending'
+            };
+
+            applications.push(newApp);
+            localStorage.setItem('horizon_apps', JSON.stringify(applications));
+
+            showToast(`Application #${newApp.id} submitted successfully!`, 'success');
+
+            // Reset wizard
+            document.getElementById('admission-form').reset();
+            currentWizardStep = 1;
+            changeWizardStep(0);
+            switchTab('home');
+        }
+
+        /* ==========================================================================
+           5. STUDENT PORTAL CONTROLLER
+           ========================================================================== */
+
+        function switchStudentTab(tab) {
+            const tabs = ['courses', 'schedule', 'grades'];
+            tabs.forEach(t => {
+                document.getElementById(`stab-${t}`).classList.add('hidden');
+                document.getElementById(`stab-btn-${t}`).classList.remove('bg-white', 'shadow-sm', 'text-brand-700');
+                document.getElementById(`stab-btn-${t}`).classList.add('text-slate-600');
+            });
+
+            document.getElementById(`stab-${tab}`).classList.remove('hidden');
+            document.getElementById(`stab-btn-${tab}`).classList.add('bg-white', 'shadow-sm', 'text-brand-700');
+        }
+
+        function renderStudentCourses() {
+            const container = document.getElementById('student-course-list');
+            let totalCredits = 0;
+
+            container.innerHTML = courses.map(c => {
+                if (c.enrolled) totalCredits += c.credits;
+
+                return `
+                    <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                        <div>
+                            <span class="text-xs font-bold text-brand-700">${c.code}</span>
+                            <h4 class="font-bold text-slate-900 text-sm">${c.title}</h4>
+                            <span class="text-xs text-slate-500">${c.credits} Credits • Prerequisites: ${c.prereq}</span>
+                        </div>
+                        <div>
+                            ${c.enrolled ? 
+                                `<button onclick="toggleCourseEnrollment('${c.id}')" class="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-semibold text-xs px-4 py-2 rounded-lg transition-colors">Drop Course</button>` :
+                                `<button onclick="toggleCourseEnrollment('${c.id}')" class="bg-brand-700 hover:bg-brand-800 text-white font-semibold text-xs px-4 py-2 rounded-lg transition-colors">Enroll Course</button>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('student-credit-count').innerText = `${totalCredits} Credits`;
+        }
+
+        function toggleCourseEnrollment(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+
+            course.enrolled = !course.enrolled;
+            localStorage.setItem('horizon_courses', JSON.stringify(courses));
+            renderStudentCourses();
+
+            const action = course.enrolled ? 'Enrolled in' : 'Dropped from';
+            showToast(`${action} ${course.code}`, course.enrolled ? 'success' : 'info');
+        }
+
+        /* ==========================================================================
+           6. FACULTY & ADMIN BACKEND CONTROLLERS
+           ========================================================================== */
+
+        function renderFacultyRoster() {
+            const tbody = document.getElementById('faculty-roster-body');
+            tbody.innerHTML = facultyRoster.map((s, idx) => `
+                <tr>
+                    <td class="p-3 font-semibold text-slate-900">${s.name}</td>
+                    <td class="p-3 text-slate-500 text-xs">${s.id}</td>
+                    <td class="p-3 text-xs"><span class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded font-semibold">${s.attendance}</span></td>
+                    <td class="p-3">
+                        <select onchange="facultyRoster[${idx}].grade = this.value" class="bg-slate-50 border border-slate-200 rounded px-2 py-1 text-xs font-bold text-slate-800">
+                            <option value="A" ${s.grade === 'A' ? 'selected' : ''}>A</option>
+                            <option value="B+" ${s.grade === 'B+' ? 'selected' : ''}>B+</option>
+                            <option value="B" ${s.grade === 'B' ? 'selected' : ''}>B</option>
+                            <option value="C" ${s.grade === 'C' ? 'selected' : ''}>C</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function saveFacultyGrades() {
+            showToast('Student course roster grades updated successfully!', 'success');
+        }
+
+        function renderAdminApplications() {
+            const tbody = document.getElementById('admin-applications-table');
+            const pendingCount = applications.filter(a => a.status === 'Pending').length;
+            document.getElementById('admin-pending-count').innerText = pendingCount;
+
+            tbody.innerHTML = applications.map(a => `
+                <tr>
+                    <td class="p-3 font-bold text-xs text-slate-700">${a.id}</td>
+                    <td class="p-3 font-semibold">${a.name}</td>
+                    <td class="p-3 text-xs text-slate-600">${a.program}</td>
+                    <td class="p-3 font-bold text-brand-700 text-xs">${a.gpa}</td>
+                    <td class="p-3 text-xs text-slate-400">${a.date}</td>
+                    <td class="p-3">
+                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full ${a.status === 'Approved' ? 'bg-emerald-100 text-emerald-800' : a.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'}">${a.status}</span>
+                    </td>
+                    <td class="p-3 text-right space-x-1">
+                        ${a.status === 'Pending' ? `
+                            <button onclick="updateAppStatus('${a.id}', 'Approved')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-2.5 py-1 rounded transition-colors">Approve</button>
+                            <button onclick="updateAppStatus('${a.id}', 'Rejected')" class="bg-red-600 hover:bg-red-700 text-white text-xs px-2.5 py-1 rounded transition-colors">Reject</button>
+                        ` : '<span class="text-xs text-slate-400">Decided</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateAppStatus(appId, newStatus) {
+            const app = applications.find(a => a.id === appId);
+            if (app) {
+                app.status = newStatus;
+                localStorage.setItem('horizon_apps', JSON.stringify(applications));
+                renderAdminApplications();
+                showToast(`Application ${appId} marked as ${newStatus}`, 'info');
+            }
+        }
+
+        function openAddCourseModal() {
+            document.getElementById('add-course-modal').classList.remove('hidden');
+        }
+
+        function handleAddNewCourse(e) {
+            e.preventDefault();
+            const newC = {
+                id: `CS-${Math.floor(Math.random() * 900)}`,
+                code: document.getElementById('new-course-code').value,
+                title: document.getElementById('new-course-name').value,
+                faculty: document.getElementById('new-course-faculty').value,
+                level: document.getElementById('new-course-level').value,
+                credits: 3,
+                tuition: '$2,500',
+                prereq: 'Department Approval',
+                desc: 'Newly added course curriculum.',
+                enrolled: false
+            };
+
+            courses.push(newC);
+            localStorage.setItem('horizon_courses', JSON.stringify(courses));
+            renderCourseCatalog();
+            closeModal('add-course-modal');
+            showToast(`New course ${newC.code} added to catalog!`, 'success');
+        }
+
+        function initAdminChart() {
+            const ctx = document.getElementById('adminAnalyticsChart')?.getContext('2d');
+            if (!ctx) return;
+
+            if (adminChartInstance) adminChartInstance.destroy();
+
+            adminChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
+                    datasets: [{
+                        label: 'Annual Student Applicants',
+                        data: [12400, 13800, 15200, 16900, 17800, 19500],
+                        borderColor: '#0284c7',
+                        backgroundColor: 'rgba(2, 132, 199, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        /* ==========================================================================
+           7. UTILITIES, MODALS & TOAST SYSTEM
+           ========================================================================== */
+
+        function renderFacultyGrid() {
+            const grid = document.getElementById('faculty-grid');
+            grid.innerHTML = DEFAULT_FACULTY.map(f => `
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col items-center text-center">
+                    <img src="${f.img}" alt="${f.name}" class="w-24 h-24 rounded-full object-cover border-2 border-brand-600 mb-4">
+                    <h3 class="font-bold text-lg text-slate-900">${f.name}</h3>
+                    <p class="text-xs text-brand-700 font-semibold mt-0.5">${f.title}</p>
+                    <p class="text-xs text-slate-500 mt-1">${f.dept}</p>
+                    <div class="mt-4 pt-4 border-t border-slate-100 w-full flex justify-between items-center text-xs text-slate-500">
+                        <span><i class="fa-solid fa-book-bookmark mr-1"></i> ${f.publications}</span>
+                        <a href="mailto:${f.email}" class="text-brand-700 font-semibold hover:underline">Contact</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openFacilityModal(title, desc, img) {
+            alert(`${title}\n\n${desc}`);
+        }
+
+        function openNewsModal(id) {
+            alert("Viewing full university press release detail.");
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgClass = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-red-600' : 'bg-brand-navy';
+
+            toast.className = `${bgClass} text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-xl flex items-center justify-between pointer-events-auto transform transition-all duration-300 translate-y-2 opacity-0`;
+            toast.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" class="ml-3 text-slate-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        /* ==========================================================================
+           8. INITIALIZATION ON WINDOW LOAD
+           ========================================================================== */
+
+        window.onload = function() {
+            renderCourseCatalog();
+            renderFacultyGrid();
+        };
+    </script>
+</body>
+</html>
